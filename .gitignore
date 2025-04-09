@@ -1,0 +1,71 @@
+# Environnement virtuel Python
+mcpenv/
+venv/
+ENV/
+env/
+.env
+.venv/
+env.bak/
+venv.bak/
+
+# Fichiers Python compilés
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Logs
+logs/*.log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fichiers de base de données
+*.sqlite3
+*.db
+
+# Fichiers de configuration
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Dossiers de build
+build/
+dist/
+*.egg-info/
+
+# Fichiers d'éditeur
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.classpath
+.settings/
+
+# Fichiers de test
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+
+# Fichiers temporaires
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Fichiers personnels qui pourraient contenir des données sensibles
+# Exclure ces fichiers si nécessaire
+# data/*.csv
+
+# Garder le dossier logs mais pas son contenu
+!logs/.gitkeep

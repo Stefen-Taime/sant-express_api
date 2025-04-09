@@ -1,0 +1,84 @@
+services:
+  # Service API FastAPI
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sante_express_api
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./scripts:/app/scripts
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/sante_express
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+    depends_on:
+      - db
+    networks:
+      - sante_express_network
+ 
+  # Service PostgreSQL avec PostGIS
+  db:
+    image: postgis/postgis:14-3.3
+    container_name: sante_express_db
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=sante_express
+    networks:
+      - sante_express_network
+ 
+  # Service pour les tâches planifiées avec initialisation intégrée
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sante_express_scheduler
+    restart: on-failure
+    command: bash -c "chmod +x /app/scripts/start.sh && /app/scripts/start.sh"
+    volumes:
+      - ./app:/app/app
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./scripts:/app/scripts
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/sante_express
+      - ENVIRONMENT=development
+      - LOG_LEVEL=INFO
+      - PGPASSWORD=postgres
+    depends_on:
+      - db
+    networks:
+      - sante_express_network
+ 
+  # Service Adminer pour la gestion de la base de données
+  adminer:
+    image: adminer
+    container_name: sante_express_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=db
+      - ADMINER_DESIGN=pepa-linha
+    depends_on:
+      - db
+    networks:
+      - sante_express_network
+
+networks:
+  sante_express_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
